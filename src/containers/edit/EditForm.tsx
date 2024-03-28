@@ -1,49 +1,40 @@
 import Button from '@/components/Button'
 import Input from '@/components/Input'
-import { User } from '@/types/userType'
+import TextArea from '@/components/TextArea'
+import { Post } from '@/types/postType'
+import { updatePostApi } from '@/services/posts'
 
-const EditForm = ({ userData }: { userData: User }) => {
-  // 특정 유저 정보 수정 API
-  async function updateUserDataApi(formData: FormData) {
-    'use server'
-
-    const newEditedUserData = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-    }
-
-    await fetch(`https://reqres.in/api/users/${userData.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newEditedUserData),
-    })
-      .then((res) => console.log('Update Success. Status Code is', res.status))
-      .catch((err) => console.log(err))
-  }
-
+const EditForm = ({ post }: { post: Post }) => {
   return (
-    <div className="w-full flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center">
       <form
-        action={updateUserDataApi}
-        className="w-full flex flex-col justify-center items-center"
+        action={updatePostApi}
+        className="w-full h-full flex flex-col justify-center items-center"
       >
-        <div className="w-3/4 ">
+        <div className="w-3/4">
           <Input
-            id="name"
-            name="name"
-            type="string"
-            placeholder={`${userData.first_name} ${userData.last_name}`}
+            id="nickname"
+            name="nickname"
+            type="text"
+            defaultValue={post.nickname}
           ></Input>
         </div>
         <div className="w-3/4 mt-4">
           <Input
-            id="email"
-            name="email"
-            type="string"
-            placeholder={userData.email}
-          />
+            id="subject"
+            name="subject"
+            type="text"
+            defaultValue={post.subject}
+          ></Input>
+        </div>
+        <div className="w-3/4 mt-4">
+          <TextArea id="content" name="content" value={post.content} />
+          <input
+            type="hidden"
+            id="ps_id"
+            name="ps_id"
+            value={post.ps_id}
+          ></input>
         </div>
         <div className="w-2/4 mt-16">
           <Button text="Update" variant="form" />

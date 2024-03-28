@@ -15,11 +15,11 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <div className="flex h-screen flex-row md:flex-row md:overflow-hidden">
-          <div className="w-1/3">
+        <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+          <div className="w-full flex-none md:w-64">
             <Nav />
           </div>
-          <div className="w-full flex justify-center items-center">
+          <div className="flex-grow flex justify-center items-center pl-4 pr-4 overflow-y-auto">
             {children}
           </div>
         </div>

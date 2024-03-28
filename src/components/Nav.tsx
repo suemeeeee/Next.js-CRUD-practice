@@ -17,7 +17,7 @@ const Nav = () => {
         </div>
         <div className="w-full m-4">
           <Link href={'/create'}>
-            <Button text="Create New Profile" variant="nav" />
+            <Button text="Create New Post" variant="nav" />
           </Link>
         </div>
       </div>
