@@ -47,7 +47,6 @@ export async function updatePostApi(formData: FormData) {
   const db = await dbConnection()
 
   const ps_id = formData.get('ps_id')
-  console.log(ps_id)
 
   const nickname = formData.get('nickname')
   const subject = formData.get('subject')
@@ -57,7 +56,6 @@ export async function updatePostApi(formData: FormData) {
   const [result] = await db.execute(sql, [nickname, subject, content, ps_id])
   await db.end()
 
-  console.log(result)
   revalidatePath('/main')
   redirect('/main')
 }

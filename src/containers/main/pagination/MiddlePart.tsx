@@ -1,15 +1,17 @@
 import PageButton from './PageButton'
 
 const MiddlePart = ({
-  pages,
+  totalPage,
   currentPage,
 }: {
-  pages: { pageNum: number }[]
+  totalPage: number
   currentPage: number
 }) => {
-  const startPages = pages.slice(0, 2)
-  const middlePages = pages.slice(currentPage - 3, currentPage + 2)
-  const endPages = pages.slice(-2)
+  const mapArr = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  const startPages = mapArr.slice(0, 2)
+  const middlePages = mapArr.slice(currentPage - 3, currentPage + 2)
+  const endPages = mapArr.slice(-2)
 
   return (
     <div className="flex flex-row">

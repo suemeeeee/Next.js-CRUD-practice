@@ -1,14 +1,14 @@
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import TextArea from '@/components/TextArea'
-import { Post } from '@/types/postType'
-import { updatePostApi } from '@/services/posts'
+import { PostType } from '@/types/postType'
 
-const EditForm = ({ post }: { post: Post }) => {
+const EditForm = ({ post }: { post: PostType }) => {
   return (
     <div className="w-full h-full flex justify-center items-center">
       <form
-        action={updatePostApi}
+        action={`/api/posts/${post.ps_id}`}
+        method="post"
         className="w-full h-full flex flex-col justify-center items-center"
       >
         <div className="w-3/4">

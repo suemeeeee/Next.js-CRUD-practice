@@ -2,17 +2,19 @@ import PageButton from './PageButton'
 
 const SidePart = ({
   where,
-  pages,
+  totalPage,
   currentPage,
 }: {
   where: string
-  pages: { pageNum: number }[]
+  totalPage: number
   currentPage: number
 }) => {
-  const startPages = pages.slice(0, 2)
-  const endPages = pages.slice(-2)
-  const forwardPages = pages.slice(0, currentPage + 2)
-  const backwardPages = pages.slice(currentPage - 3)
+  const mapArr = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  const startPages = mapArr.slice(0, 2)
+  const endPages = mapArr.slice(-2)
+  const forwardPages = mapArr.slice(0, currentPage + 2)
+  const backwardPages = mapArr.slice(currentPage - 3)
   return (
     <div className="flex flex-row">
       <button className="mr-4">⬅️ Previous</button>

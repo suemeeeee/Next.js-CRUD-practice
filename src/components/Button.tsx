@@ -1,3 +1,4 @@
+'use client'
 const Button = ({
   text,
   variant,
@@ -17,7 +18,6 @@ const Button = ({
       'w-full py-4 px-4 text-white rounded-md bg-slate-500 transition hover:bg-slate-50 hover:text-cyan-800',
     form: 'w-full py-4 px-4 text-white rounded-full bg-slate-500 transition hover:bg-slate-50 hover:text-cyan-800',
   }
-
   return (
     <button onClick={onClick} className={`${buttonVariants[variant]}`}>
       {text}

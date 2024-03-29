@@ -1,19 +1,29 @@
 'use client'
+import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-const PageButton = ({ pages }: { pages: { pageNum: number }[] }) => {
-  // 맑은 정신으로 다시하자 ...
-  const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams)
-  params.set('page', pages.toString())
 
-  const onClickHandler = () => {}
+const PageButton = ({ pages }: { pages: number[] }) => {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const currentPage = Number(searchParams.get('page')) || 1
+
+  console.log(currentPage)
+
   return (
     <div>
-      {pages.map((page) => {
+      {pages.map((idx) => {
         return (
-          <button onClick={onClickHandler} className="p-4">
-            {page.pageNum}
-          </button>
+          <Link
+            href={`${pathname}/?page=${idx}`}
+            key={idx}
+            className={
+              currentPage === idx
+                ? 'px-4 py-3 rounded bg-slate-500 text-white'
+                : 'px-4 py-3'
+            }
+          >
+            {idx}
+          </Link>
         )
       })}
     </div>

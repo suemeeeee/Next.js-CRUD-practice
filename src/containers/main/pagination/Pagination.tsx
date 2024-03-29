@@ -37,135 +37,109 @@ const Pagination = ({
   totalPage: number
   currentPage: number
 }) => {
-  // page dummy data
-  const pages1 = [
-    { pageNum: 1 },
-    { pageNum: 2 },
-    { pageNum: 3 },
-    { pageNum: 4 },
-    { pageNum: 5 },
-    { pageNum: 6 },
-    { pageNum: 7 },
-    { pageNum: 8 },
-    { pageNum: 9 },
-    { pageNum: 10 },
-    { pageNum: 11 },
-    { pageNum: 12 },
-    { pageNum: 13 },
-    { pageNum: 14 },
-    { pageNum: 15 },
-    { pageNum: 16 },
-    { pageNum: 17 },
-    { pageNum: 18 },
-    { pageNum: 19 },
-    { pageNum: 20 },
-  ]
-  const pages2 = [
-    { pageNum: 1 },
-    { pageNum: 2 },
-    { pageNum: 3 },
-    { pageNum: 4 },
-    { pageNum: 5 },
-    { pageNum: 6 },
-    { pageNum: 7 },
-    { pageNum: 8 },
-    { pageNum: 9 },
-    { pageNum: 10 },
-    { pageNum: 11 },
-  ]
-  const pages3 = [
-    { pageNum: 1 },
-    { pageNum: 2 },
-    { pageNum: 3 },
-    { pageNum: 4 },
-    { pageNum: 5 },
-    { pageNum: 6 },
-    { pageNum: 7 },
-    { pageNum: 8 },
-    { pageNum: 9 },
-    { pageNum: 10 },
-    { pageNum: 11 },
-    { pageNum: 12 },
-  ]
-  const pages4 = [{ pageNum: 1 }, { pageNum: 2 }, { pageNum: 3 }]
-
   // 현재 페이지가 총 페이지 넘어서거나 0이면 error리턴
-  if (totalPage < currentPage || currentPage <= 0) return <>pagination error</>
+  if (totalPage < currentPage || currentPage < 0) return <>pagination error</>
 
   if (totalPage <= 8) {
     // 총 페이지 수가 8개 이하일 때.
     // 4번 타입 (static pagination)
-    return <StaticPart pages={pages4} />
+    return <StaticPart totalPage={totalPage} />
   } else if (totalPage <= 11) {
     // 총 페이지 수가 9개 이상 11개 이하일 때
     // 2번 타입
-    if (currentPage <= 5) {
+    if (currentPage <= totalPage - 6) {
       if (currentPage <= 3) {
         // 제일 앞 3페이지까지는 동일
-        return <EndOfSide where="first" pages={pages2} />
+        return <EndOfSide where="first" totalPage={totalPage} />
       } else {
         return (
-          <SidePart where="left" pages={pages2} currentPage={currentPage} />
+          <SidePart
+            where="left"
+            totalPage={totalPage}
+            currentPage={currentPage}
+          />
         )
       }
     } else if (
-      currentPage > totalPage - 6 &&
-      currentPage <= totalPage - 6 + totalPage - (totalPage - 6) * 2
+      currentPage <=
+      totalPage - 6 + (totalPage - (totalPage - 6) * 2)
     ) {
       // 현재 페이지가 중간 파트에 있을 때
-      return <StaticPart pages={pages2} />
-    } else if (currentPage <= totalPage - 3) {
+      return <StaticPart totalPage={totalPage} />
+    } else if (currentPage <= totalPage) {
       // 현재 페이지가 뒤 파트에 있을 때
-      return <SidePart where="right" pages={pages2} currentPage={currentPage} />
-    } else if (currentPage > totalPage - 3) {
-      // 제일 뒤 3페이지까지는 동일
-      return <EndOfSide where="last" pages={pages2} />
+      if (currentPage > totalPage - 3) {
+        // 제일 뒤 3페이지까지는 동일
+        return <EndOfSide where="last" totalPage={totalPage} />
+      }
+      return (
+        <SidePart
+          where="right"
+          totalPage={totalPage}
+          currentPage={currentPage}
+        />
+      )
     }
   } else if (totalPage >= 13) {
     // 1번 타입
     if (currentPage <= 6) {
       // 현재 페이지가 앞 파트에 있을 때
       if (currentPage <= 3) {
-        return <EndOfSide where="first" pages={pages1} />
+        return <EndOfSide where="first" totalPage={totalPage} />
       } else {
         return (
-          <SidePart where="left" pages={pages1} currentPage={currentPage} />
+          <SidePart
+            where="left"
+            totalPage={totalPage}
+            currentPage={currentPage}
+          />
         )
       }
-    } else if (currentPage < totalPage - 5) {
+    } else if (currentPage <= totalPage - 6) {
       // 현재 페이지가 중간 파트에 있을 때
-      return <MiddlePart pages={pages1} currentPage={currentPage} />
+      return <MiddlePart totalPage={totalPage} currentPage={currentPage} />
     } else if (currentPage <= totalPage) {
       // 현재 페이지가 뒤 파트에 있을 때
       if (currentPage > totalPage - 3) {
         // 제일 뒤 3페이지까지는 동일
-        return <EndOfSide where="right" pages={pages1} />
+        return <EndOfSide where="right" totalPage={totalPage} />
       }
-      return <SidePart where="right" pages={pages1} currentPage={currentPage} />
+      return (
+        <SidePart
+          where="right"
+          totalPage={totalPage}
+          currentPage={currentPage}
+        />
+      )
     }
   } else if (totalPage === 12) {
     // 3번 타입
     if (currentPage <= 6) {
       // 현재 페이지가 앞 파트에 있을 때
       if (currentPage <= 3) {
-        return <EndOfSide where="first" pages={pages1} />
+        return <EndOfSide where="first" totalPage={totalPage} />
       } else {
         return (
-          <SidePart where="left" pages={pages1} currentPage={currentPage} />
+          <SidePart
+            where="left"
+            totalPage={totalPage}
+            currentPage={currentPage}
+          />
         )
       }
     } else if (currentPage <= totalPage) {
       // 현재 페이지가 뒤 파트에 있을 때
       if (currentPage > totalPage - 3) {
         // 제일 뒤 3페이지까지는 동일
-        if (currentPage > totalPage - 3) {
-          // 제일 뒤 3페이지까지는 동일
-          return <EndOfSide where="right" pages={pages1} />
-        }
-        return (
-          <SidePart where="right" pages={pages1} currentPage={currentPage} />
-        )
+        return <EndOfSide where="right" totalPage={totalPage} />
       }
+      return (
+        <SidePart
+          where="right"
+          totalPage={totalPage}
+          currentPage={currentPage}
+        />
+      )
     }
   }
 }
