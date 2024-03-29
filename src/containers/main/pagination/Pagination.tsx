@@ -131,7 +131,7 @@ const Pagination = ({
       // 현재 페이지가 뒤 파트에 있을 때
       if (currentPage > totalPage - 3) {
         // 제일 뒤 3페이지까지는 동일
-        return <EndOfSide where="right" totalPage={totalPage} />
+        return <EndOfSide where="last" totalPage={totalPage} />
       }
       return (
         <SidePart
