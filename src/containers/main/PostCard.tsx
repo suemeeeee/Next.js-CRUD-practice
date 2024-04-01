@@ -5,7 +5,10 @@ import Link from 'next/link'
 import LinkButton from '@/components/LinkButton'
 
 const PostCard = ({ post }: { post: PostType }) => {
-  const deleteUserDataWithId = deletePostApi.bind(null, post.ps_id)
+  const deleteUserDataWithId: () => Promise<void> = deletePostApi.bind(
+    null,
+    post.ps_id,
+  )
 
   return (
     <div className="w-full px-4 py-8 rounded-md bg-slate-100 hover:bg-slate-200">
@@ -20,7 +23,7 @@ const PostCard = ({ post }: { post: PostType }) => {
         </div>
         <div className="grow flex justify-center items-center">
           <form action={deleteUserDataWithId} className="w-full flex ">
-            <Button text="Delete" variant="usercard" />
+            <Button text="Delete" variant="usercard" id={post.ps_id} />
           </form>
           <div className="w-full ml-4">
             <LinkButton

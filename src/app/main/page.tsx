@@ -1,7 +1,7 @@
 import PostCard from '@/containers/main/PostCard'
 import Pagination from '@/containers/main/pagination/Pagination'
-import getPosts from '@/services/postsApi'
-import { PostType } from '@/types/postType'
+import { getPosts } from '@/services/postsApi'
+import { PostType, getPostsType } from '@/types/postType'
 
 const Main = async ({
   searchParams,
@@ -10,12 +10,12 @@ const Main = async ({
     page?: string
   }
 }) => {
-  const query = searchParams?.page || ''
-  const data = await getPosts(query)
+  const query: string | undefined = searchParams?.page
+  const data: getPostsType = await getPosts(query)
 
-  const posts = data.data.posts
-  const currentPage = data.data.currentPage
-  const totalPage = data.data.totalPage
+  const posts: PostType[] = data.data.posts
+  const currentPage: number = data.data.currentPage
+  const totalPage: number = data.data.totalPage
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center relative">

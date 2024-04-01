@@ -2,6 +2,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import dbConnection from './mysql'
+import { Connection } from 'mysql2/promise'
+import { ResultType } from '@/types/dbTypes'
 
 // 전체 게시글 GET
 export async function getPostsApi() {
@@ -63,10 +65,10 @@ export async function updatePostApi(formData: FormData) {
 // 특정 user 삭제 API
 export async function deletePostApi(id: number) {
   'use server'
-  const db = await dbConnection()
+  const db: Connection = await dbConnection()
 
   const sql = `update posts set del = 1 where ps_id = ? and del = 0;`
-  const [result] = await db.execute(sql, [id])
+  const [result]: ResultType = await db.execute(sql, [id])
   await db.end()
 
   revalidatePath('/main')
