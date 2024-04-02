@@ -37,6 +37,8 @@ export async function DELETE(
 ) {
   const ps_id: string = params.id
 
+  console.log('delete 실행')
+
   try {
     const db: Connection = await dbConnection()
 
@@ -44,9 +46,7 @@ export async function DELETE(
     const [result]: ResultType = await db.execute(sql, [ps_id])
     await db.end()
 
-    revalidatePath('/main')
-
-    return NextResponse.json(result)
+    // return NextResponse.json(result)
   } catch (error) {
     return NextResponse.json(
       {
@@ -55,6 +55,8 @@ export async function DELETE(
       { status: 500 },
     )
   }
+  revalidatePath('/main')
+  redirect('/main')
 }
 
 // 특정 게시글 업데이트
@@ -90,6 +92,6 @@ export async function POST(
     )
   }
 
-  revalidatePath('/main')
-  redirect(`/main`)
+  revalidatePath(`/post/${ps_id}`)
+  redirect(`/post/${ps_id}`)
 }

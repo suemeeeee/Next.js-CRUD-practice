@@ -19,9 +19,7 @@ export default function RootLayout({
           <div className="w-full flex-none md:w-64">
             <Nav />
           </div>
-          <div className="flex-grow flex justify-center items-center pl-4 pr-4 overflow-y-auto">
-            {children}
-          </div>
+          <div className="flex-grow flex overflow-y-auto mx-8">{children}</div>
         </div>
       </body>
     </html>

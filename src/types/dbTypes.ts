@@ -5,6 +5,7 @@ import {
   ResultSetHeader,
   RowDataPacket,
 } from 'mysql2/promise'
+import { PostType } from './postType'
 
 export type ResultType = [
   (
@@ -19,11 +20,9 @@ export type ResultType = [
 ]
 
 export interface ReturnDataType {
-  data: {
-    posts: {}
-    count: number
-    pageSize: number
-    currentPage: number
-    totalPage: number
-  }
+  posts: RowDataPacket[] | PostType[]
+  count: number
+  pageSize: number
+  currentPage: number
+  totalPage: number
 }

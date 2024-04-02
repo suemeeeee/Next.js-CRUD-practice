@@ -72,6 +72,7 @@ export async function deletePostApi(id: number) {
   await db.end()
 
   revalidatePath('/main')
+  redirect('/main')
 }
 
 // 페이지네이션 처리 api

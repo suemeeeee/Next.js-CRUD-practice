@@ -1,4 +1,4 @@
 const Loading = () => {
-  return <div>Loading...</div>
+  return <div className="w-full">Loading...</div>
 }
 export default Loading

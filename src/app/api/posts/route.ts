@@ -4,16 +4,17 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 // Type import
-import { Connection } from 'mysql2/promise'
+import { Connection, ResultSetHeader, RowDataPacket } from 'mysql2/promise'
 import { ReturnDataType, ResultType } from '@/types/dbTypes'
+import { PostType } from '@/types/postType'
 
 export async function GET(request: NextRequest) {
-  const limit: number = 2
+  const limit = 5
   // null 처리
   const queryString: string | null = request.nextUrl.searchParams.get('page')
-  const returnData: ReturnDataType = {
+  const returnData: { data: ReturnDataType } = {
     data: {
-      posts: {},
+      posts: [],
       count: 0,
       pageSize: limit,
       currentPage: 0,
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
   try {
     const db: Connection = await dbConnection()
     const sql = `select * from posts where del = 0 order by ps_id desc;`
-    const [resultAll]: ResultType = await db.execute(sql)
+    const resultAll = await db.execute(sql)
 
     if (Array.isArray(resultAll)) {
       // 전체 게시글 갯수
@@ -33,15 +34,15 @@ export async function GET(request: NextRequest) {
       // 전체 페이지 갯수 (전체 게시글 / limit을 올림한 값)
       returnData.data.totalPage = Math.ceil(resultAll.length / limit)
       // 현재 페이지 번호 (queryString 값. 없으면 Number(null) = 0)
-      returnData.data.currentPage = Number(queryString)
+      returnData.data.currentPage = Number(queryString ? queryString : 1)
     }
 
     // 쿼리스트링 있으면 pagination 처리
     if (queryString !== null) {
-      const offset: number = (Number(queryString) - 1) * Number(limit)
+      const offset = (Number(queryString) - 1) * Number(limit)
       const sql =
         'select * from posts where del = 0 order by ps_id desc limit ? offset ?'
-      const [result]: ResultType = await db.execute(sql, [
+      const [result] = await db.execute<RowDataPacket[]>(sql, [
         `${limit}`,
         `${offset}`,
       ])
@@ -51,11 +52,12 @@ export async function GET(request: NextRequest) {
       // 없으면 0페이지로 제일 앞 페이지
       const sql =
         'select * from posts where del = 0 order by ps_id desc limit ?'
-      const [result]: ResultType = await db.execute(sql, [`${limit}`])
+      const [result]: ResultType = await db.execute<RowDataPacket[]>(sql, [
+        `${limit}`,
+      ])
       returnData.data.posts = result
       await db.end()
     }
-
     return NextResponse.json(returnData)
   } catch (error) {
     return NextResponse.json(

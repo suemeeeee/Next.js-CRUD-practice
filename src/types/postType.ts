@@ -7,12 +7,10 @@ export interface PostType {
   updated_at: string
 }
 
-export interface getPostsType {
-  data: {
-    posts: PostType[]
-    count: number
-    pageSize: number
-    currentPage: number
-    totalPage: number
-  }
+export interface PageInfoType {
+  posts: PostType[]
+  count: number
+  pageSize: number
+  currentPage: number
+  totalPage: number
 }
