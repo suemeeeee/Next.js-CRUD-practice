@@ -1,11 +1,12 @@
 'use client'
 
-import axios from 'axios'
 const Button = ({
+  onClick,
   text,
   variant,
   id,
 }: {
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined
   text: string
   variant: string
   id?: number | string
@@ -22,25 +23,8 @@ const Button = ({
     form: 'w-full py-4 px-4 text-white rounded-full bg-slate-500 transition hover:bg-slate-50 hover:text-cyan-800',
   }
 
-  const onClickHandler = async () => {
-    // if (text === 'Delete') {
-    //   if (confirm('정말 삭제하시겠습니까?')) {
-    //     await axios
-    //       .delete(`https://localhost:3000/api/posts/${id}`, {
-    //         data: { id: id },
-    //       })
-    //       .then((res) => {
-    //         console.log(res)
-    //       })
-    //       .catch((err) => {
-    //         console.log(err)
-    //       })
-    //   }
-    // }
-  }
-
   return (
-    <button onClick={onClickHandler} className={`${buttonVariants[variant]}`}>
+    <button onClick={onClick} className={`${buttonVariants[variant]}`}>
       {text}
     </button>
   )

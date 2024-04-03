@@ -12,12 +12,11 @@ const Main = async ({
   }
 }) => {
   const query: string | undefined = searchParams?.page
-  const data: PageInfoType = await getPosts(query)
-
-  // Pagination 변수
-  const posts: PostType[] = data.posts
-  const currentPage: number = data.currentPage
-  const totalPage: number = data.totalPage
+  // // Pagination 변수
+  // const data: PageInfoType = await getPosts(query)
+  // const posts: PostType[] = data.posts
+  // const currentPage: number = data.currentPage
+  // const totalPage: number = data.totalPage
 
   // infinite Scroll 변수
   const initPage: PageInfoType = await getPosts()

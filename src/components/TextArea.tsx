@@ -15,7 +15,6 @@ const TextArea = ({
       defaultValue={value}
       placeholder={value ? value : name}
       rows={5}
-      required
     ></textarea>
   )
 }

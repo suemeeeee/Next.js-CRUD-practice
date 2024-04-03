@@ -18,7 +18,6 @@ const Input = ({
         className="w-full rounded-md p-4 bg-slate-200 focus:border-2 focus:border-slate-300"
         defaultValue={defaultValue}
         placeholder={defaultValue ? '' : name}
-        required
       ></input>
     </div>
   )

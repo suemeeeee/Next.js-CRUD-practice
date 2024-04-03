@@ -1,12 +1,9 @@
 import dbConnection from '@/services/mysql'
 import { NextRequest, NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 // Type import
-import { Connection, ResultSetHeader, RowDataPacket } from 'mysql2/promise'
-import { ReturnDataType, ResultType } from '@/types/dbTypes'
-import { PostType } from '@/types/postType'
+import { Connection, RowDataPacket } from 'mysql2/promise'
+import { ReturnDataType } from '@/types/dbTypes'
 
 export async function GET(request: NextRequest) {
   const limit = 5
@@ -26,7 +23,7 @@ export async function GET(request: NextRequest) {
   try {
     const db: Connection = await dbConnection()
     const sql = `select * from posts where del = 0 order by ps_id desc;`
-    const resultAll = await db.execute(sql)
+    const resultAll = await db.execute<RowDataPacket[]>(sql)
 
     if (Array.isArray(resultAll)) {
       // 전체 게시글 갯수
@@ -46,15 +43,13 @@ export async function GET(request: NextRequest) {
         `${limit}`,
         `${offset}`,
       ])
+
       returnData.data.posts = result
       await db.end()
     } else {
-      // 없으면 0페이지로 제일 앞 페이지
       const sql =
         'select * from posts where del = 0 order by ps_id desc limit ?'
-      const [result]: ResultType = await db.execute<RowDataPacket[]>(sql, [
-        `${limit}`,
-      ])
+      const [result] = await db.execute<RowDataPacket[]>(sql, [`${limit}`])
       returnData.data.posts = result
       await db.end()
     }
@@ -69,31 +64,45 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, response: NextResponse) {
   const formData: FormData = await request.formData()
-
   const nickname: FormDataEntryValue | null = formData.get('nickname')
   const subject: FormDataEntryValue | null = formData.get('subject')
   const content: FormDataEntryValue | null = formData.get('content')
 
+  // 데이터 유효성 검증
+  // 클라이언트 측에서 받아온 formData의 value들이 null이거나 빈 문자열일 경우
+  if (nickname === null || nickname === '') {
+    return NextResponse.json(
+      { error: '닉네임을 입력해주세요.' },
+      { status: 400 },
+    )
+  }
+  if (subject === null || subject === '') {
+    return NextResponse.json({ error: '제목을 입력해주세요.' }, { status: 400 })
+  }
+  if (content === null || content === '') {
+    return NextResponse.json({ error: '내용을 입력해주세요.' }, { status: 400 })
+  }
+
   try {
     const db: Connection = await dbConnection()
     const sql = `insert into posts (nickname, subject, content, del) values (?, ?, ?, 0)`
-    const [result]: ResultType = await db.execute(sql, [
+    const [result] = await db.execute<RowDataPacket[]>(sql, [
       nickname,
       subject,
       content,
     ])
-
     await db.end()
+    return NextResponse.json(result)
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: error,
-      },
-      { status: 500 },
-    )
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: error,
+        },
+        { status: 500 },
+      )
+    }
   }
-  revalidatePath('/main')
-  redirect('/main')
 }

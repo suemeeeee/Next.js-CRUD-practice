@@ -1,23 +1,5 @@
-import {
-  FieldPacket,
-  OkPacket,
-  ProcedureCallPacket,
-  ResultSetHeader,
-  RowDataPacket,
-} from 'mysql2/promise'
+import { RowDataPacket } from 'mysql2'
 import { PostType } from './postType'
-
-export type ResultType = [
-  (
-    | OkPacket
-    | RowDataPacket[]
-    | ResultSetHeader[]
-    | RowDataPacket[][]
-    | OkPacket[]
-    | ProcedureCallPacket
-  ),
-  FieldPacket[],
-]
 
 export interface ReturnDataType {
   posts: RowDataPacket[] | PostType[]
@@ -25,4 +7,10 @@ export interface ReturnDataType {
   pageSize: number
   currentPage: number
   totalPage: number
+}
+
+export class CustomError extends Error {
+  response?: {
+    data: { error: { message: string; code: string } }
+  }
 }
