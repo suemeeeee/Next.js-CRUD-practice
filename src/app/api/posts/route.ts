@@ -2,14 +2,17 @@ import dbConnection from '@/services/mysql'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Type import
-import { Connection, RowDataPacket } from 'mysql2/promise'
-import { ReturnDataType } from '@/types/dbTypes'
+import { Connection, FieldPacket, RowDataPacket } from 'mysql2/promise'
+import { PageInfoType, PostType } from '@/types/postType'
+import { redirect } from 'next/navigation'
 
 export async function GET(request: NextRequest) {
+  // 페이지당 받아올 게시글 수
   const limit = 5
-  // null 처리
+  // 쿼리스트링. null일 경우, 제일 첫 페이지이다.
   const queryString: string | null = request.nextUrl.searchParams.get('page')
-  const returnData: { data: ReturnDataType } = {
+  // 반환할 데이터
+  const returnData: { data: PageInfoType } = {
     data: {
       posts: [],
       count: 0,
@@ -23,7 +26,8 @@ export async function GET(request: NextRequest) {
   try {
     const db: Connection = await dbConnection()
     const sql = `select * from posts where del = 0 order by ps_id desc;`
-    const resultAll = await db.execute<RowDataPacket[]>(sql)
+    const [resultAll, field]: [PostType[], FieldPacket[]] =
+      await db.execute(sql)
 
     if (Array.isArray(resultAll)) {
       // 전체 게시글 갯수
@@ -36,43 +40,74 @@ export async function GET(request: NextRequest) {
 
     // 쿼리스트링 있으면 pagination 처리
     if (queryString !== null) {
+      // 몇 번째 게시글부터 limit만큼 가져올 건지. (페이지 - 1) * 가져올 개수
       const offset = (Number(queryString) - 1) * Number(limit)
       const sql =
         'select * from posts where del = 0 order by ps_id desc limit ? offset ?'
-      const [result] = await db.execute<RowDataPacket[]>(sql, [
-        `${limit}`,
-        `${offset}`,
-      ])
+      const [result, field]: [PostType[], FieldPacket[]] = await db.execute(
+        sql,
+        [`${limit}`, `${offset}`],
+      )
 
       returnData.data.posts = result
       await db.end()
     } else {
+      // 쿼리스트링 없으면, 즉 페이지 정보 없으면 0페이지. 가장 초기 페이지 데이터를 가져온다.
       const sql =
         'select * from posts where del = 0 order by ps_id desc limit ?'
-      const [result] = await db.execute<RowDataPacket[]>(sql, [`${limit}`])
+      const [result, field]: [PostType[], FieldPacket[]] = await db.execute(
+        sql,
+        [`${limit}`],
+      )
       returnData.data.posts = result
       await db.end()
     }
     return NextResponse.json(returnData)
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: error,
-      },
-      { status: 500 },
-    )
+    // 타입 가드 처리
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: error,
+        },
+        { status: 500 },
+      )
+    }
   }
 }
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
+  // 매개변수로 받은 request에서 formData를 추출해 formData변수에 담아준다.
   const formData: FormData = await request.formData()
+
+  // formData 변수에 get메서드를 사용하여 작성자, 제목, 내용 변수에 각각 담아준다.
   const nickname: FormDataEntryValue | null = formData.get('nickname')
   const subject: FormDataEntryValue | null = formData.get('subject')
   const content: FormDataEntryValue | null = formData.get('content')
 
-  // 데이터 유효성 검증
-  // 클라이언트 측에서 받아온 formData의 value들이 null이거나 빈 문자열일 경우
+  // 타입 검사 string이 아니면 에러 반환
+  if (typeof nickname !== 'string') {
+    return NextResponse.json(
+      { error: 'typeError. typeof nickname is not string' },
+      { status: 400 },
+    )
+  }
+  if (typeof subject !== 'string') {
+    return NextResponse.json(
+      { error: 'typeError. typeof nickname is not string' },
+      { status: 400 },
+    )
+  }
+  if (typeof content !== 'string') {
+    return NextResponse.json(
+      { error: 'typeError. typeof nickname is not string' },
+      { status: 400 },
+    )
+  }
+
   if (nickname === null || nickname === '') {
+    // 데이터 유효성 검증
+    // 클라이언트 측에서 받아온 formData의 value들이 null이거나 빈 문자열일 경우 에러응답
     return NextResponse.json(
       { error: '닉네임을 입력해주세요.' },
       { status: 400 },
@@ -88,7 +123,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
   try {
     const db: Connection = await dbConnection()
     const sql = `insert into posts (nickname, subject, content, del) values (?, ?, ?, 0)`
-    const [result] = await db.execute<RowDataPacket[]>(sql, [
+    const [result, field]: [PostType[], FieldPacket[]] = await db.execute(sql, [
       nickname,
       subject,
       content,

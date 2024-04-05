@@ -3,20 +3,20 @@ import Button from '@/components/Button'
 import Input from '@/components/Input'
 import TextArea from '@/components/TextArea'
 import ToastPopup from '@/components/ToastPopup'
-import { revalidate } from '@/utils/revalidate'
 import { updatePost } from '@/services/updateAction'
 import { PostType } from '@/types/postType'
 import { FormEvent, useState } from 'react'
 
 const EditForm = ({ post }: { post: PostType }) => {
+  // 참고: 주석 containsers/create/Form.tsx와 동일
   const [errroMessage, setErrroMessage] = useState<string>('')
   const [toast, setToast] = useState<boolean>(false)
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
-    const response = await updatePost(formData, post.ps_id)
+    const response: string | null = await updatePost(formData, post?.ps_id)
     if (response) {
       setErrroMessage(response)
       setToast(true)
@@ -34,7 +34,7 @@ const EditForm = ({ post }: { post: PostType }) => {
             id="nickname"
             name="nickname"
             type="text"
-            defaultValue={post.nickname}
+            defaultValue={post?.nickname}
           ></Input>
         </div>
         <div className="w-3/4 mt-4">
@@ -42,11 +42,11 @@ const EditForm = ({ post }: { post: PostType }) => {
             id="subject"
             name="subject"
             type="text"
-            defaultValue={post.subject}
+            defaultValue={post?.subject}
           ></Input>
         </div>
         <div className="w-3/4 mt-4">
-          <TextArea id="content" name="content" value={post.content} />
+          <TextArea id="content" name="content" value={post?.content} />
         </div>
         <div className="w-2/4 mt-16">
           <Button text="Update" variant="form" />

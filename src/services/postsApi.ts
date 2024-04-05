@@ -7,7 +7,7 @@ export async function getPosts(query?: string): Promise<PageInfoType> {
     .get(`https://localhost:3000/api/posts/${query ? querystring : ''}`)
     .then((res: AxiosResponse) => {
       if (res.status === 200) {
-        console.log('페이지 리스트 데이터를 성공적으로 가져왔습니다.')
+        // console.log('페이지 리스트 데이터를 성공적으로 가져왔습니다.')
         return res.data.data
       } else {
         console.log(
@@ -17,18 +17,18 @@ export async function getPosts(query?: string): Promise<PageInfoType> {
       }
     })
     .catch((err) =>
-      console.log('서버에 문제가 발생했습니다. 에러 메세지:', err.message),
+      console.error('서버에 문제가 발생했습니다. 에러 메세지:', err.message),
     )
 
   return data
 }
 
-export async function getPost(params: string) {
+export async function getPost(params: string): Promise<PostType> {
   const data: PostType = await axios
     .get(`https://localhost:3000/api/posts/${params}`)
     .then((res: AxiosResponse) => {
       if (res.status === 200) {
-        console.log('페이지 데이터를 성공적으로 가져왔습니다.')
+        // console.log('페이지 데이터를 성공적으로 가져왔습니다.')
         return res.data
       } else {
         console.log(
@@ -37,9 +37,11 @@ export async function getPost(params: string) {
         )
       }
     })
-    .catch((err: AxiosError) =>
-      console.log('서버에 문제가 발생했습니다. 에러 메세지:', err.message),
-    )
+    .catch((err) => {
+      if (err instanceof AxiosError) {
+        console.log('서버에 문제가 발생했습니다. 에러 메세지:', err.message)
+      }
+    })
 
   return data
 }

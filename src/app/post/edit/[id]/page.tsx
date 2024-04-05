@@ -7,7 +7,7 @@ const Edit = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="w-full">
-      <EditForm post={post} />
+      <EditForm post={post} />{' '}
     </div>
   )
 }

@@ -5,7 +5,7 @@ const ToastPopup = ({
   setToast,
 }: {
   message: string
-  setToast: any
+  setToast: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
