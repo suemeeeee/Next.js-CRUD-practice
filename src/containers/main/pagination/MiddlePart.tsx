@@ -7,7 +7,7 @@ const MiddlePart = ({
   totalPage: number
   currentPage: number
 }) => {
-  const mapArr = Array.from({ length: totalPage }, (_, i) => i + 1)
+  const mapArr: number[] = Array.from({ length: totalPage }, (_, i) => i + 1)
 
   const startPages = mapArr.slice(0, 2)
   const middlePages = mapArr.slice(currentPage - 3, currentPage + 2)

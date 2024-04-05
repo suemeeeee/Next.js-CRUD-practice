@@ -1,13 +1,15 @@
 'use client'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useSearchParams,
+} from 'next/navigation'
 
 const PageButton = ({ pages }: { pages: number[] }) => {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const currentPage = Number(searchParams.get('page')) || 1
-
-  console.log(currentPage)
+  const pathname: string = usePathname()
+  const searchParams: ReadonlyURLSearchParams = useSearchParams()
+  const currentPage: number = Number(searchParams.get('page')) || 1
 
   return (
     <div>
