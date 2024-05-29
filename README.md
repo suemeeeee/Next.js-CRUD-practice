@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌿 Simple Next.js Posting Application
 
-## Getting Started
+### 깃허브 링크 : https://github.com/suemeeeee/Next.js-CRUD-practice
 
-First, run the development server:
+Next.js 14의 다양한 기능을 익히기 위해 **CRUD 기능을 지닌 간단한 게시판을 구현해 보았습니다.** 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **C**reate : 게시판에 새로운 게시글을 작성할 수 있다.
+- **R**ead : 게시판에 작성된 게시글들을 조회할 수 있다. / 특정 게시글을 조회할 수 있다.
+- **U**pdate : 게시판에 작성한 게시글을 수정할 수 있다.
+- **D**elete : 작성한 게시글을 삭제할 수 있다.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 이 프로젝트에서의 볼거리!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Next.js 13.4 버전 이후의 앱 라우트 방식으로 라우팅을 구현했습니다.**  
+    
+2. **Server Action과 Route Handler를 사용한 API 생성 방식을 둘 다 사용해보았습니다.** 
+    - 서버 액션과 Next.js의 라우트 핸들러를 모두 사용해보고 각각의 장점과 단점을 느껴볼 수 있었습니다.
+3. **페이지네이션과 무한 스크롤 두 방식을 모두 적용해 보았습니다.** 
+    - 페이지네이션의 경우, 깃허브의 이슈 페이지의 페이지네이션 구조가 독특하다고 생각했었기 때문에 이를 직접 구현해보았습니다.
+    - 무한스크롤의 경우 이전 프로젝트에서는 React-query를 사용해서 구현했었기 때문에 새로운 방식을 사용해보고 싶어 Intersection Observer API 를 사용하여 구현하였습니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 1. 기술 스택
 
-## Learn More
+### Front
 
-To learn more about Next.js, take a look at the following resources:
+- TypeScript
+- React
+- Next.js
+- HTML5 / CSS3
+- Tailwinds CSS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Back
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Next.js
+- MySQL
 
-## Deploy on Vercel
+### **Common**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Git
+- Github
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 2. 프로젝트 설명 및 시연 화면
+
+### 🍀 메인 화면 (Read)
+
+전체 게시글을 조회할 수 있다. 
+
+무한 스크롤 / 페이지네이션으로 조회가 가능하다. 
+
+- **무한 스크롤**
+    - intersection Observer API 사용해서 구현
+    - threshold 속성(타겟이 얼만큼 보일 때 observer를 실행할 지 백분율로 표시한 값)을 1이 아닌 0.8로 주어 관찰 대상이 100%가 아니라 80% 노출될 경우 콜백함수를 실행하여 유저로 하여금 대기 시간이 안 느껴지도록 구현
+    
+- **페이지네이션**
+    - github의 issue 페이지의 페이지네이션과 동일한 구조로 구현 (https://github.com/microsoft/TypeScript/issues - issue 페이지 예시)
+
+### 🍀 게시글 상세 페이지 (Read)
+
+전체 게시글 조회 화면에서 특정 게시글을 클릭하면, 해당 게시글의 상세 페이지로 이동한다. 
+
+상세 페이지에서는 게시글의 상세 내용(제목, 글, 작성자)을 확인할 수 있고, 삭제 및 수정할 수 있다. 
+
+- Next.js App Router의 동적 라우팅 폴더 기능을 사용
+
+### 🍀 게시글 생성 (Create)
+
+네비게이션 바의 Create New Post 버튼을 누르면 새로운 게시글 생성 페이지로 이동하고, 작성자와 제목, 내용을 입력한 뒤 새 게시글을 생성할 수 있다. 
+
+- 생성에 성공하면 전체 게시글을 조회할 수 있는 메인 페이지로 이동한다.
+    - revalidating 기능을 사용해서 캐시된 메인 게시글 목록을 재검증하여 생성 변화를 즉각 반영
+   
+- 작성자, 제목, 게시글 내용 중 하나라도 미입력 상태면 생성이 불가하다. (데이터 유효성 검증)
+    - 토스트 팝업으로 빈 칸에 대한 입력을 요청한다.
+        - 토스트 팝업은 2초후 자동으로 사라진다.
+        - 즉시 끌 수 있는 X 버튼을 우측에 추가하여 UX 개선
+
+### 🍀 게시글 수정 (Update)
+
+게시글 상세 페이지에서 Edit 버튼을 누르면 수정 페이지로 이동하고 내용을 수정한 뒤 Update 버튼을 누르면 게시글을 수정할 수 있다. 
+
+- 수정 페이지로 이동 시 닉네임, 제목, 내용의 각 인풋에는 수정 전 내용이 미리 입력되어 있도록 한다.
+- 수정 시에도 생성 시와 동일하게 세 필드 중 한 필드라도 미입력 시 수정이 불가하다. (토스트 팝업)
+- 수정 후 해당 게시글의 상세 페이지로 다시 redirect하여 수정이 된 것을 직관적으로 확인할 수 있도록 한다.
+
+### 🍀 게시글 삭제 (Delete)
+
+게시글 상세 페이지에서 Delete 버튼을 누르면 재확인 후 게시글을 삭제할 수 있다. 
+
+- revalidating 기능을 사용해서 캐시된 메인 게시글 목록을 재검증하여 삭제 변화를 즉각 반영
+- 삭제 후 전체 게시글 조회 페이지로 redirect 한다.
+
+## 3. 회고
+
+### 느낀 점
+
+mysql을 사용해서 데이터 베이스를 생성하고 Next.js의 라우트 핸들러 기능을 통해 백엔드 파트를 직접 구현한 것이 뿌듯하고 새로워서 즐거웠습니다. 백엔드 부분은 처음 구현해본 것이라 프론트에 데이터를 넘겨줄 때 어떤 식으로 넘겨줄지에 대한 고민이 많이 들었습니다. 직접 백엔드에서 프론트엔드로 데이터를 넘겨주는 로직을 작성해보니, 프론트에서 받은 데이터를 어떻게 처리하는 것이 좋을지, 백엔드에서 왜 그런 형식으로 데이터가 넘어오는지에 대한 이해를 좀 더 깊이 할 수 있었습니다. 
+
+Next.js의 서버 사이드 렌더링 특징과 fetch를 사용한 캐싱, revalidation을 통한 재검증 등을 직접 구현해보니, 매우 빠르고 작성이 간단하다는 장점을 실감할 수 있었습니다. 
+
+또한 타입스크립트를 타입스크립트 답게 사용하기 위해 에러도 빠짐없이 타입을 명시해 주었습니다. 이 과정에서 instanceof를 사용한 타입 가드로 타입을 좁혀서 에러의 타입 처리하는 방법을 처음 알게되고 사용해볼 수 있어서 좋았습니다.
+
+처음하는 솔로 프로젝트였어서 부족한 점이 많지만 혼자 고민하는 시간도 더 많았고, 그만큼 더 많은 걸 배울 수 있었다고 생각합니다. 앞으로도 더 다양한 솔로 프로젝트를 꾸준히 진행해보며 끊임없는 고민과 공부를 통해 개발자로서의 식견을 넓히고 코드 입력에 익숙해지고 싶다고 생각했습니다. 
+
+### 개선하고 싶은 부분
+
+- 회원가입 및 로그인 기능 추가 구현 (회원 시스템)
+- 무한스크롤 고도화
