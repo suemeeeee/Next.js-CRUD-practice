@@ -11,32 +11,32 @@ const Main = async ({
     page?: string
   }
 }) => {
-  // const query: string | undefined = searchParams?.page
+  const query: string | undefined = searchParams?.page
   // infinite Scroll 변수
   const initPage: PageInfoType = await getPosts()
 
   // // Pagination 변수
-  // const data: PageInfoType = await getPosts(query)
-  // const posts: PostType[] = data.posts
-  // const currentPage: number = data.currentPage
-  // const totalPage: number = data.totalPage
+  const data: PageInfoType = await getPosts(query)
+  const posts: PostType[] = data.posts
+  const currentPage: number = data.currentPage
+  const totalPage: number = data.totalPage
 
   return (
-    <div className="w-full">
-      {/* <div className="w-full overflow-y-auto mb-28">
+    <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full overflow-y-auto mb-28">
         {posts.map((post: PostType) => (
           <div className="w-full mt-4">
             <PostCard post={post}></PostCard>
           </div>
         ))}
       </div>
-      <div className="w-full flex justify-center absolute inset-x-0 bottom-12">
+      <div className="flex justify-center bottom-12">
         <Pagination
           totalPage={totalPage}
           currentPage={currentPage}
         ></Pagination>
-      </div> */}
-      <InfiniteScroll initPage={initPage} />
+      </div>
+      {/* <InfiniteScroll initPage={initPage} /> */}
     </div>
   )
 }

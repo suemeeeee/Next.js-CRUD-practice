@@ -4,11 +4,10 @@ import { NextRequest, NextResponse } from 'next/server'
 // Type import
 import { Connection, FieldPacket, RowDataPacket } from 'mysql2/promise'
 import { PageInfoType, PostType } from '@/types/postType'
-import { redirect } from 'next/navigation'
 
 export async function GET(request: NextRequest) {
   // 페이지당 받아올 게시글 수
-  const limit = 5
+  const limit = 4
   // 쿼리스트링. null일 경우, 제일 첫 페이지이다.
   const queryString: string | null = request.nextUrl.searchParams.get('page')
   // 반환할 데이터
